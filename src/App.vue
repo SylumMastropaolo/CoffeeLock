@@ -2,6 +2,8 @@
   <div id="app">
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
     <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
+    <button @click="shortRest()">Short Rest</button>
+    <button @click="longRest()">Long Rest</button>
     <h3>
       Warlock
     </h3>
@@ -9,8 +11,10 @@
       <h5>
         {{slot.current}} / {{slot.max}} {{slot.label}}
       </h5>
-      <button @click="slot.current--">-</button>
-      <button @click="slot.current++">+</button>
+      <button @click="convertToSorcPoints(slot)">Convert to Sorc Points</button>
+      <button @click="removeSlot(slot)">-</button>
+      <button @click="addSlot(slot)">+</button>
+      <button @click="createWithSorcPoints(slot)">Create with Sorc Points</button>
     </div>
     <h3>
       Sorcerer
@@ -25,8 +29,10 @@
       <h5>
         {{slot.current}} / {{slot.max}} {{slot.label}}
       </h5>
-      <button @click="slot.current--">-</button>
-      <button @click="slot.current++">+</button>
+      <button @click="convertToSorcPoints(slot)">Convert to Sorc Points</button>
+      <button @click="removeSlot(slot)">-</button>
+      <button @click="addSlot(slot)">+</button>
+      <button @click="createWithSorcPoints(slot)">Create with Sorc Points</button>
     </div>
   </div>
 </template>
@@ -72,15 +78,45 @@ export default {
             label: "Level 2 Spell Slots"
           }
         ]
-      },
-      pactSlots: 2,
-      maxPactSlots: 2,
+      }
     }
   },
   methods: {
-    convertToSorcPoints(index, slots) {
-      slots[index].current--;
-      slots[index].level;
+    shortRest() {
+      this.resetSpells(this.warlock.spellSlots);
+    },
+    longRest() {
+      this.resetSpells(this.warlock.spellSlots);
+      this.resetSpells(this.sorcerer.spellSlots);
+    },
+    resetSpells(spellSlots) {
+      spellSlots.forEach(slot => {
+        slot.current = slot.max;
+      });
+    },
+    convertToSorcPoints(slot) {
+      if (slot.current == 0){
+        alert("You don't have any slots of this level left.")
+      } else if (this.sorcerer.currentSorcPoints + slot.level > this.sorcerer.maxSorcPoints) {
+        alert("Converting this spell to sorcery points will overflow your maximum.");
+      } else {
+        slot.current--;
+        this.sorcerer.currentSorcPoints += slot.level;
+      }
+    },
+    createWithSorcPoints(slot) {
+      if (this.sorcerer.currentSorcPoints - slot.level < 0) {
+        alert("You don't have enough sorcery points to create this spell slot");
+      } else {
+        slot.current++;
+        this.sorcerer.currentSorcPoints -= slot.level;
+      }
+    },
+    addSlot(slot) {
+      if(slot.current < slot.max) slot.current++;
+    },
+    removeSlot(slot) {
+      if(slot.current > 0) slot.current--;
     }
   },
   computed: {
