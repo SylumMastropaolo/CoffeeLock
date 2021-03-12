@@ -88,6 +88,7 @@ export default {
     longRest() {
       this.resetSpells(this.warlock.spellSlots);
       this.resetSpells(this.sorcerer.spellSlots);
+      this.sorcerer.currentSorcPoints = this.sorcerer.maxSorcPoints;
     },
     resetSpells(spellSlots) {
       spellSlots.forEach(slot => {
